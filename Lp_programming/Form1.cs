@@ -141,49 +141,9 @@ namespace Lp_programming
         private void ResultButton_Click(object sender, EventArgs e)
         {
             resultButton.Enabled = false;
-            createTable();
             basis = new BasisAlgoritm(data);
-        }
-
-        public void createTable()
-        {
-            for (int i = 0; i < data.numberLimit + 2; i++)
-            {
-                List<Fraction> list = new List<Fraction>();
-                for (int j = 0; j < data.numberVariables + 2; j++)
-                {
-                    list.Add(new Fraction(0, 1));
-                }
-                data.table.Add(list);
-            }
-            
-            for (int i = 1; i <= data.numberLimit; i++)
-            {
-                data.table[i][0] = data.numberVariables + i;
-            }
-
-            for (int i = 1; i <= data.numberVariables; i++)
-            {
-                data.table[0][i] = i;
-            }
-
-            for (int i = 1; i <= data.numberLimit; i++)
-            {
-                for (int j = 1; j <= data.numberVariables + 1; j++)
-                {
-                    data.table[i][j] = Fraction.ToFraction(allTablesTextBox[i - 1, j - 1].Text.ToString());
-                }
-            }
-
-            for (int i = 1; i <= data.numberVariables + 1; i++)
-            {
-                Fraction temp = new Fraction(0, 1);
-                for (int j = 1; j <= data.numberLimit; j++)
-                {
-                    temp = temp + data.table[j][i];
-                }
-                data.table[data.numberLimit + 1][i] = -temp;
-            }
+            basis.createTable(allTablesTextBox);
+            basis.menu();
         }
     }
 }

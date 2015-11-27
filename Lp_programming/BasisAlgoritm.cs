@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using System.Threading.Tasks;
 
 namespace Lp_programming
@@ -22,13 +23,17 @@ namespace Lp_programming
             data = d;
             numberVariables = data.numberVariables;
             numberLimit = data.numberLimit;
+        }
+
+        public void menu()
+        {
             copyInPastTable();
             print(data.table);
             while (checkEnd())
             {
                 findMemberInAllTable();
                 conversionRowCol();
-                skipLines();    
+                skipLines();
                 exchange();
                 goOnColumn();
                 copyInPastTable();
@@ -36,7 +41,48 @@ namespace Lp_programming
             }
         }
 
-        public void findMemberInAllTable()
+        public void createTable(TextBox[,] box)
+        {
+            for (int i = 0; i < data.numberLimit + 2; i++)
+            {
+                List<Fraction> list = new List<Fraction>();
+                for (int j = 0; j < data.numberVariables + 2; j++)
+                {
+                    list.Add(new Fraction(0, 1));
+                }
+                data.table.Add(list);
+            }
+
+            for (int i = 1; i <= data.numberLimit; i++)
+            {
+                data.table[i][0] = data.numberVariables + i;
+            }
+
+            for (int i = 1; i <= data.numberVariables; i++)
+            {
+                data.table[0][i] = i;
+            }
+
+            for (int i = 1; i <= data.numberLimit; i++)
+            {
+                for (int j = 1; j <= data.numberVariables + 1; j++)
+                {
+                    data.table[i][j] = Fraction.ToFraction(box[i - 1, j - 1].Text.ToString());
+                }
+            }
+
+            for (int i = 1; i <= data.numberVariables + 1; i++)
+            {
+                Fraction temp = new Fraction(0, 1);
+                for (int j = 1; j <= data.numberLimit; j++)
+                {
+                    temp = temp + data.table[j][i];
+                }
+                data.table[data.numberLimit + 1][i] = -temp;
+            }
+        }
+
+        private void findMemberInAllTable()
         {
             division = int.MaxValue;
             for (int i = 1; i <= numberVariables; i++)
