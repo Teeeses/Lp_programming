@@ -184,8 +184,6 @@ namespace Lp_programming
                 }
                 data.table[data.numberLimit + 1][i] = -temp;
             }
-
-            //Console.Write("DOUBLE: " + data.table[1][1].ToDouble());
         }
     }
 }
