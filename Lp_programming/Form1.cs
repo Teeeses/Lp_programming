@@ -15,6 +15,7 @@ namespace Lp_programming
     {
         private Data data;
         private BasisAlgoritm basis;
+        private SimplexMethod simplex;
         private TextBox[] functionTextBoxArray;
         private TextBox[,] allTablesTextBox;
         private Button resultButton;
@@ -23,6 +24,7 @@ namespace Lp_programming
         {
             InitializeComponent();
             data = new Data();
+            simplex = new SimplexMethod(data);
             resultButton = new Button();
             groupBox2.Hide();
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
@@ -72,6 +74,7 @@ namespace Lp_programming
         {
             data.minMax = minMaxBox.Text.ToString();
             data.numberVariables = Convert.ToInt32(variablesBox.Text.ToString());
+            data.functionSize = data.numberVariables;
             data.numberLimit = Convert.ToInt32(limitBox.Text.ToString());
             groupBox2.Show();
             createFunctionPanel();
@@ -140,10 +143,12 @@ namespace Lp_programming
 
         private void ResultButton_Click(object sender, EventArgs e)
         {
-            resultButton.Enabled = false;
             basis = new BasisAlgoritm(data);
+            resultButton.Enabled = false;
+            data.createFunctionArray(functionTextBoxArray);
             basis.createTable(allTablesTextBox);
             basis.menu();
+            simplex.menu();
         }
     }
 }

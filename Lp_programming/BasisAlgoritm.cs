@@ -10,13 +10,9 @@ namespace Lp_programming
     public class BasisAlgoritm
     {
         private Data data;
-        public int bearingX;
-        public int bearingY;
         private int numberLimit;
         private int numberVariables;
-        public Fraction bearing;
-        private Fraction division;
-        public List<List<Fraction>> pastTable = new List<List<Fraction>>();
+        private List<List<Fraction>> pastTable = new List<List<Fraction>>();
 
         public BasisAlgoritm(Data d)
         {
@@ -28,7 +24,7 @@ namespace Lp_programming
         public void menu()
         {
             copyInPastTable();
-            print(data.table);
+            data.print(data.table);
             while (checkEnd())
             {
                 findMemberInAllTable();
@@ -37,7 +33,7 @@ namespace Lp_programming
                 exchange();
                 goOnColumn();
                 copyInPastTable();
-                print(data.table);
+                data.print(data.table);
             }
         }
 
@@ -55,14 +51,14 @@ namespace Lp_programming
 
             for (int i = 1; i <= data.numberLimit; i++)
             {
-                data.table[i][0] = data.numberVariables + i;
+                data.table[i][0] = new Fraction(data.numberVariables + i, 1);
             }
 
             for (int i = 1; i <= data.numberVariables; i++)
             {
-                data.table[0][i] = i;
+                data.table[0][i] = new Fraction(i, 1); ;
             }
-
+            
             for (int i = 1; i <= data.numberLimit; i++)
             {
                 for (int j = 1; j <= data.numberVariables + 1; j++)
@@ -70,6 +66,15 @@ namespace Lp_programming
                     data.table[i][j] = Fraction.ToFraction(box[i - 1, j - 1].Text.ToString());
                 }
             }
+
+            /*data.table[1][1] = new Fraction(1, 1);
+            data.table[1][2] = new Fraction(-1, 1);
+            data.table[1][3] = new Fraction(1, 1);
+            data.table[1][4] = new Fraction(3, 1);
+            data.table[2][1] = new Fraction(2, 1);
+            data.table[2][2] = new Fraction(-5, 1);
+            data.table[2][3] = new Fraction(-1, 1);
+            data.table[2][4] = new Fraction(0, 1);*/
 
             for (int i = 1; i <= data.numberVariables + 1; i++)
             {
@@ -84,7 +89,7 @@ namespace Lp_programming
 
         private void findMemberInAllTable()
         {
-            division = int.MaxValue;
+            data.division = int.MaxValue;
             for (int i = 1; i <= numberVariables; i++)
             {
                 if (data.table[numberLimit + 1][i] < 0)
@@ -99,21 +104,23 @@ namespace Lp_programming
             for (int j = 1; j <= numberLimit; j++)
             {
                 Fraction temp = data.table[j][numberVariables + 1] / data.table[j][i];
-                if (data.table[j][i] > 0 && temp < division)
+                if (data.table[j][i] > 0 && temp < data.division)
                 {
-                    division = data.table[j][numberVariables + 1] / data.table[j][i];
-                    bearing = data.table[j][i];
-                    bearingX = j;
-                    bearingY = i;
+                    data.division = data.table[j][numberVariables + 1] / data.table[j][i];
+                    data.bearing = data.table[j][i];
+                    data.bearingX = j;
+                    data.bearingY = i;
                 }
             }
         }
 
         private void exchange()
         {
+            int bearingX = data.bearingX;
+            int bearingY = data.bearingY;
             Fraction temp = data.table[bearingX][0];
-            data.table[bearingX][0] = data.table[0][bearingY];
-            data.table[0][bearingY] = temp;
+            data.table[data.bearingX][0] = data.table[0][bearingY];
+            data.table[0][data.bearingY] = temp;
         }
 
         private bool checkEnd() 
@@ -139,8 +146,11 @@ namespace Lp_programming
                 }
                 i++;
             }
-            if(!temp)
+            if (!temp)
+            {
                 numberVariables--;
+                data.numberVariables--;
+            }
         }
 
         private void deleteColumn(int del)
@@ -151,14 +161,16 @@ namespace Lp_programming
             }
         }
 
-        public void conversionRowCol()
+        private void conversionRowCol()
         {
+            int bearingX = data.bearingX;
+            int bearingY = data.bearingY;
             data.table[bearingX][bearingY] = 1 / data.table[bearingX][bearingY];
             for(int i = 1; i <= numberVariables + 1; i++)
             {
                 if(i != bearingY)
                 {
-                    data.table[bearingX][i] = data.table[bearingX][i] / bearing;
+                    data.table[bearingX][i] = data.table[bearingX][i] / data.bearing;
                 }
             }
 
@@ -166,13 +178,14 @@ namespace Lp_programming
             {
                 if (i != bearingX)
                 {
-                    data.table[i][bearingY] = -(data.table[i][bearingY] / bearing);
+                    data.table[i][bearingY] = -(data.table[i][bearingY] / data.bearing);
                 }
             }
         }
 
         private void skipLines()
         {
+            int bearingX = data.bearingX;
             for (int i = 1; i <= numberLimit + 1; i++)
             {
                 if (i != bearingX)
@@ -184,27 +197,14 @@ namespace Lp_programming
 
         private void sumVectorTable(int x)
         {
+            int bearingX = data.bearingX;
+            int bearingY = data.bearingY;
             for (int i = 1; i <= numberVariables + 1; i++)
             {
                 if (i != bearingY)
                 {
                     data.table[x][i] = data.table[x][i] - (pastTable[x][bearingY] * data.table[bearingX][i]);
                  }
-            }
-        }
-
-
-
-        private void print(List<List<Fraction>> list)
-        {
-            Console.Write("\n");
-            for (int i = 0; i < numberLimit + 2; i++)
-            {
-                for (int j = 0; j < numberVariables + 2; j++)
-                {
-                    Console.Write(data.table[i][j].ToString() + "   ");
-                }
-                Console.Write("\n");
             }
         }
 
